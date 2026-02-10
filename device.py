@@ -39,7 +39,7 @@ class DeviceProfile:
             self.client_id = 'com.ubercab.UberEats' if self.phone_type_flow == 'iphone' else 'com.ubercab.eats'
             self.app_variant = 'ubereats'
             self.app_url = f'uberlogin://auth3.uber.com/applogin/eats'
-            self.version_checksum = '2f2a44b9b3f33da81dadfec899e4954a'
+            self.version_checksum = 'cfba4a2d6551b6ef719f44d7f8d4a880'
         else:
             raise ValueError(f"Invalid app variant: {self.config['app_variant']}")
 
@@ -304,7 +304,7 @@ class DeviceProfile:
             "cpuAbi": ", arm64-v8a, armeabi, armeabi-v7a",
             "deviceAltitude": 0.0,
             "deviceIds": {
-                "androidId": self.android_id_uuid,
+                "androidId": self.android_id,
                 "appDeviceId": self.app_device_id,
                 "drmId": self.drm_id,
                 "googleAdvertisingId": self.google_advertising_id,
