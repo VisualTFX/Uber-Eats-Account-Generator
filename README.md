@@ -2,7 +2,7 @@
 
 Automated Uber Eats account creation using mobile API simulation with IMAP or Hotmail email verification.
 
-by @yubunus on discord and telegram
+by @yubunus on telegram
 
 ## ⚠️ DISCLAIMER
 
@@ -12,7 +12,7 @@ This project was initially built for my personal education, as I was studying mo
 
 - Automated account creation via mobile API endpoints
 - Two email verification methods: Gmail IMAP or Hotmail API
-- Android device spoofing with realistic fingerprints
+- Android and iPhone device spoofing with realistic fingerprints
 - Automatic OTP extraction from emails
 - Batch account generation
 - Proxy support with automatic rotation
@@ -50,6 +50,7 @@ Edit `config.json`:
 ```json
 {
   "app_variant": "ubereats",
+  "phone_type_flow": "android",
   "proxies_enabled": true,
   "auto_get_otp": true,
   "sleep": 3,
@@ -72,6 +73,7 @@ Edit `config.json`:
 | Option               | Description                           | Default  |
 | -------------------- | ------------------------------------- | -------- |
 | `app_variant`        | "ubereats" or "postmates"             | ubereats |
+| `phone_type_flow`    | "android" or "iphone"                 | android  |
 | `proxies_enabled`    | Use proxies from proxies.txt          | false    |
 | `auto_get_otp`       | Auto-extract OTP vs manual entry      | true     |
 | `sleep`              | Delay between requests (seconds)      | 3        |
@@ -125,7 +127,7 @@ Accounts are processed in batches of 20 and saved to `genned/` directory.
 
 ## 🔍 How It Works
 
-1. **Device Initialization**: Generates realistic Android device profile with 100+ unique IDs
+1. **Device Initialization**: Generates realistic Android or iPhone device profile with 100+ unique IDs
 2. **Session Setup**: Three-step device upsert process to register with Uber's backend
 3. **Email Signup**: Submits email address to initiate account creation
 4. **OTP Verification**: Automatically extracts 4-digit code from email
