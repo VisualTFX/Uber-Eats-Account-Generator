@@ -42,15 +42,15 @@ class AccountGenerator:
         headers = {
             'x-uber-device-mobile-iso2': 'US',
             'x-uber-drm-id': self.device.drm_id,
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'x-uber-device-language': 'en_US',
-            'user-agent': 'Cronet/129.0.6668.102@aa3a5623',
+            'user-agent': self.device.cronet_ua,
             'x-uber-device-os': self.device.os,
             'x-uber-device-sdk': self.device.sdk,
             'x-uber-request-uuid': str(uuid.uuid4()),
             'x-uber-client-user-session-id': self.device.client_user_analytics_session_id,
             'x-uber-client-version': self.device.version,
-            'x-uber-device-manufacturer': 'Google',
+            'x-uber-device-manufacturer': self.device.manufacturer,
             'x-uber-call-uuid': self.device.call_uuid,
             'x-uber-device-id': self.device.udid,
             'x-uber-markup-textformat-version': '1',
@@ -77,7 +77,7 @@ class AccountGenerator:
         json_data = {
             'request': {
                 'installationID': self.device.installation_uuid,
-                'clientType': 'android',
+                'clientType': self.device.device_type,
                 'clientIntegrityToken': '',
             },
         }
@@ -88,15 +88,15 @@ class AccountGenerator:
         headers = {
             'x-uber-device-mobile-iso2': 'US',
             'x-uber-drm-id': self.device.drm_id,
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'x-uber-device-language': 'en_US',
-            'user-agent': 'Cronet/129.0.6668.102@aa3a5623',
+            'user-agent': self.device.cronet_ua,
             'x-uber-device-os': self.device.os,
             'x-uber-device-sdk': self.device.sdk,
             'x-uber-request-uuid': self.device.client_network_request_uuid,
             'x-uber-client-user-session-id': self.device.client_user_analytics_session_id,
             'x-uber-client-version': self.device.version,
-            'x-uber-device-manufacturer': 'Google',
+            'x-uber-device-manufacturer': self.device.manufacturer,
             'x-uber-call-uuid': self.device.call_uuid,
             'x-uber-device-id': self.device.udid,
             'x-uber-markup-textformat-version': '1',
@@ -135,7 +135,7 @@ class AccountGenerator:
         # upsert device 3 upsert
         headers = {
             'x-uber-device-mobile-iso2': 'US',
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'uber-trace-id': self.device.trace_id,
             'x-uber-device-language': 'en_US',
             'user-agent': self.device.user_agent,
@@ -144,7 +144,7 @@ class AccountGenerator:
             'x-uber-request-uuid': self.device.client_network_request_uuid,
             'x-uber-client-user-session-id': self.device.client_user_analytics_session_id,
             'x-uber-client-version': self.device.version,
-            'x-uber-device-manufacturer': 'Google',
+            'x-uber-device-manufacturer': self.device.manufacturer,
             'x-uber-call-uuid': self.device.call_uuid,
             'x-uber-device-id': self.device.udid,
             'x-uber-markup-textformat-version': '1',
@@ -203,7 +203,7 @@ class AccountGenerator:
 
         params = {
             'showDebugInfo': 'false',
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'x-uber-client-name': 'eats',
             'x-uber-client-version': self.device.version,
             'x-uber-client-id': self.device.client_id,
@@ -324,7 +324,7 @@ class AccountGenerator:
             'x-uber-app-device-id': self.device.app_device_id,
             'x-uber-app-variant': self.device.app_variant,
             'content-type': 'application/json',
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'x-csrf-token': 'x',
             'x-uber-cold-launch-id': self.device.cold_launch_id,
             'x-uber-device-udid': self.device.udid,
@@ -426,7 +426,7 @@ class AccountGenerator:
             'Accept-Language': 'en',
             'X-Uber-Device-Udid': self.device.udid,
             'X-Uber-Client-Name': 'eats',
-            'X-Uber-Device': 'android',
+            'X-Uber-Device': self.device.device_type,
             'X-Uber-Client-Version': self.device.version,
             'X-Uber-App-Variant': self.device.app_variant,
             'X-Uber-Cold-Launch-Id': self.device.cold_launch_id,
@@ -470,7 +470,7 @@ class AccountGenerator:
             'Accept-Language': 'en',
             'X-Uber-Device-Udid': self.device.udid,
             'X-Uber-Client-Name': 'eats',
-            'X-Uber-Device': 'android',
+            'X-Uber-Device': self.device.device_type,
             'X-Uber-Client-Version': self.device.version,
             'X-Uber-App-Variant': self.device.app_variant,
             'X-Uber-Cold-Launch-Id': self.device.cold_launch_id,
@@ -598,7 +598,7 @@ class AccountGenerator:
             'Accept-Language': 'en',
             'X-Uber-Device-Udid': self.device.udid,
             'X-Uber-Client-Name': 'eats',
-            'X-Uber-Device': 'android',
+            'X-Uber-Device': self.device.device_type,
             'X-Uber-Client-Version': self.device.version,
             'X-Uber-App-Variant': self.device.app_variant,
             'X-Uber-Cold-Launch-Id': self.device.cold_launch_id,
@@ -691,7 +691,7 @@ class AccountGenerator:
             'Accept-Language': 'en',
             'X-Uber-Device-Udid': self.device.udid,
             'X-Uber-Client-Name': 'eats',
-            'X-Uber-Device': 'android',
+            'X-Uber-Device': self.device.device_type,
             'X-Uber-Client-Version': self.device.version,
             'X-Uber-App-Variant': self.device.app_variant,
             'X-Uber-Cold-Launch-Id': self.device.cold_launch_id,
@@ -762,16 +762,16 @@ class AccountGenerator:
         headers = {
             'X-Uber-Device-Mobile-Iso2': self.device.location_country,
             'X-Uber-Drm-Id': self.device.drm_id,
-            'X-Uber-Device': 'android',
+            'X-Uber-Device': self.device.device_type,
             'X-Uber-Cit': self.device.build_cit_token(),
             'X-Uber-Device-Language': f'en_{self.device.location_country}',
-            'User-Agent': 'Cronet/129.0.6668.102@aa3a5623',
+            'User-Agent': self.device.cronet_ua,
             'X-Uber-Device-Os': self.device.os,
             'X-Uber-Device-Sdk': self.device.sdk,
             'X-Uber-Request-Uuid': str(uuid.uuid4()),
             'X-Uber-Client-User-Session-Id': self.device.client_user_analytics_session_id,
             'X-Uber-Client-Version': self.device.version,
-            'X-Uber-Device-Manufacturer': 'Google',
+            'X-Uber-Device-Manufacturer': self.device.manufacturer,
             'X-Uber-Call-Uuid': str(uuid.uuid4()),
             'X-Uber-Device-Id': self.device.udid,
             'X-Uber-Markup-Textformat-Version': '1',
@@ -816,16 +816,16 @@ class AccountGenerator:
         headers = {
             'x-uber-device-mobile-iso2': 'US',
             'x-uber-drm-id': self.device.drm_id,
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'x-uber-device-language': 'en_US',
-            'user-agent': 'Cronet/129.0.6668.102@aa3a5623',
+            'user-agent': self.device.cronet_ua,
             'authorization': f'Bearer {auth_code}',
             'x-uber-device-os': self.device.os,
             'x-uber-device-sdk': self.device.sdk,
             'x-uber-request-uuid': str(uuid.uuid4()),
             'x-uber-client-user-session-id': self.device.client_user_analytics_session_id,
             'x-uber-client-version': self.device.version,
-            'x-uber-device-manufacturer': 'Google',
+            'x-uber-device-manufacturer': self.device.manufacturer,
             'x-uber-call-uuid': self.device.call_uuid,
             'x-uber-device-id': self.device.udid,
             'x-uber-markup-textformat-version': '1',
@@ -872,7 +872,7 @@ class AccountGenerator:
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'x-uber-device-mobile-iso2': 'US',
             'x-uber-drm-id': self.device.drm_id,
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'x-uber-cold-launch-id': self.device.cold_launch_id,
             'sec-ch-prefers-color-scheme': 'light',
             'x-uber-device-language': 'en_US',
@@ -881,7 +881,7 @@ class AccountGenerator:
             'x-uber-request-uuid': str(uuid.uuid4()),
             'x-uber-client-version': self.device.version,
             'x-uber-client-user-session-id': self.device.client_user_analytics_session_id,
-            'x-uber-device-manufacturer': 'Google',
+            'x-uber-device-manufacturer': self.device.manufacturer,
             'x-uber-device-id': self.device.udid,
             'x-uber-hot-launch-id': self.device.hot_launch_id,
             'x-uber-device-model': self.device.model,
@@ -1498,8 +1498,8 @@ async def main():
         print(f"\n[✓] Batch {batch_num}/{total_batches} completed")
         print(f"[*] {len([r for r in batch_results if isinstance(r, dict) and r.get('success')])} successful in this batch")
     
-    successful_accounts = []
-    failed_accounts = []
+    successful_accounts = [r['email'] for r in all_results if isinstance(r, dict) and r.get('success')]
+    failed_accounts = [f"{r.get('email', 'N/A')} ({r.get('error', 'Unknown error')})" for r in all_results if isinstance(r, dict) and not r.get('success')]
     
     # Summary
     print(f"\n{'='*60}")

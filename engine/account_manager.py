@@ -27,7 +27,7 @@ class AccountManager:
             'content-type': 'application/json',
             #'x-uber-edge-tls-ja3-fingerprint': '5659c10619c455ea477287b12cf3f7e7',
             'x-uber-device-id': self.device.udid,
-            'x-uber-device': 'android',
+            'x-uber-device': self.device.device_type,
             'x-csrf-token': 'x',
             'x-uber-device-language': f'en_{self.device.location_country}',
             'x-uber-device-udid': self.device.udid,

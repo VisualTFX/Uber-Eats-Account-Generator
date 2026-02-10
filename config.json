@@ -1,5 +1,6 @@
 {
   "app_variant": "ubereats",
+  "phone_type_flow": "android",
   "proxies_enabled": true,
   "auto_get_otp": true,
   "sleep": 3,

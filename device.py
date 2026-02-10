@@ -24,6 +24,7 @@ class DeviceProfile:
     def __init__(self, request_handler: RequestHandler = None):
         self.read_config()
         self.request_handler = request_handler if request_handler else RequestHandler()
+        self.phone_type_flow = self.config['phone_type_flow']
 
         # App specifics
         self.first_party_client_id = 'S_Fwp1YMY1qAlAf5-yfYbeb7cfJE-50z'
@@ -34,8 +35,8 @@ class DeviceProfile:
             self.app_url = f'uberlogin://auth3.uber.com/applogin/postmates'
             self.version_checksum = '50bd155c2f4fd6a9d6031196a40b80a0'
         elif self.config['app_variant'] == 'ubereats':
-            self.version = '6.299.10001'
-            self.client_id = 'com.ubercab.eats'
+            self.version = '6.309.10001'
+            self.client_id = 'com.ubercab.UberEats' if self.phone_type_flow == 'iphone' else 'com.ubercab.eats'
             self.app_variant = 'ubereats'
             self.app_url = f'uberlogin://auth3.uber.com/applogin/eats'
             self.version_checksum = '2f2a44b9b3f33da81dadfec899e4954a'
@@ -43,21 +44,37 @@ class DeviceProfile:
             raise ValueError(f"Invalid app variant: {self.config['app_variant']}")
 
         # Device Specifics
-        self.user_agent = self.device_json['user_agent']
-        self.os = self.device_json['os_latest']
-        self.sdk = '35'
-        self.brand = self.device_json['brand']
-        self.model = self.device_json['model']
+        if self.phone_type_flow == 'iphone':
+            self.device_type = 'iphone'
+            self.manufacturer = 'Apple'
+            self.user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+            self.cronet_ua = self.user_agent
+            self.os = '18.3.2'
+            self.sdk = ''
+            self.brand = 'Apple'
+            self.model = 'iPhone17,3'
+            self.phone_name = 'iPhone 16'
+            self.device_width = 1179
+            self.device_height = 2556
+            self.cpu_abi = '16777228-2'
+        else:
+            self.device_type = 'android'
+            self.manufacturer = 'Google'
+            self.user_agent = self.device_json['user_agent']
+            self.cronet_ua = 'Cronet/129.0.6668.102@aa3a5623'
+            self.os = self.device_json['os_latest']
+            self.sdk = '35'
+            self.brand = self.device_json['brand']
+            self.model = self.device_json['model']
+            self.phone_name = self.device_json['phone_name']
+            self.device_width = self.device_json['width']
+            self.device_height = self.device_json['height']
+            self.cpu_abi = self.device_json['cpuAbi']
+
         self.location_city = None  # Will be set in initialize
         self.location_country = 'US'
-        self.device_width = self.device_json['width']
-        self.device_height = self.device_json['height']
-        self.cpu_abi = self.device_json['cpuAbi']
         self.latitude = None  # Will be set in initialize
         self.longitude = None  # Will be set in initialize
-
-        # for testing(not used)
-        self.phone_name = self.device_json['phone_name']
 
         self.udid = str(uuid.uuid4())
         self.app_device_id = str(uuid.uuid4())
@@ -69,6 +86,7 @@ class DeviceProfile:
         self.client_session_uuid = str(uuid.uuid4())
 
         self.android_id = secrets.token_hex(8)
+        self.android_id_uuid = str(uuid.uuid4())
         self.google_advertising_id = str(uuid.uuid4())
         self.google_app_set_id = str(uuid.uuid4())
         self.installation_uuid = str(uuid.uuid4())
@@ -235,9 +253,44 @@ class DeviceProfile:
         return json.dumps(data)
 
     def build_device_data(self) -> str:
-        BATTERY_STATUSES = ["charging", "discharging"]
         BATTERY_STATUSES = ['unplugged']
         epoch = self._generate_epoch()
+
+        if self.phone_type_flow == 'iphone':
+            device_data = {
+                "deviceOsVersion": "18.3.2",
+                "carrierMnc": "65535",
+                "envChecksum": "1fa5c4fb68087c3d86a7e3d76c6591ea",
+                "deviceIds": {
+                    "advertiserId": "00000000-0000-0000-0000-000000000000",
+                    "uberId": self.udid.upper(),
+                    "perfId": self._generate_perf_id().upper(),
+                    "vendorId": self.app_device_id.upper(),
+                },
+                "wifiConnected": True,
+                "version": self.version,
+                "libCount": 1123,
+                "locationServiceEnabled": False,
+                "deviceModel": "iPhone17,3",
+                "carrierMcc": "65535",
+                "versionChecksum": self.version_checksum,
+                "carrier": "--",
+                "deviceName": "iPhone",
+                "rooted": False,
+                "envId": "454750e9f0a8953573da55b1aef89a1d",
+                "sourceApp": "eats",
+                "batteryLevel": 1,
+                "batteryStatus": random.choice(BATTERY_STATUSES),
+                "epoch": epoch,
+                "deviceOsName": "iOS",
+                "cpuAbi": "16777228-2",
+                "ipAddress": self.ip_address,
+            }
+
+            raw_json = json.dumps(device_data, separators=(",", ":"))
+            raw_json = json.dumps(raw_json)
+            return raw_json
+
         epoch_sci = f"{epoch:.12E}".replace("+", "")
 
         device_data = {
@@ -251,7 +304,7 @@ class DeviceProfile:
             "cpuAbi": ", arm64-v8a, armeabi, armeabi-v7a",
             "deviceAltitude": 0.0,
             "deviceIds": {
-                "androidId": self.android_id,
+                "androidId": self.android_id_uuid,
                 "appDeviceId": self.app_device_id,
                 "drmId": self.drm_id,
                 "googleAdvertisingId": self.google_advertising_id,
@@ -295,7 +348,7 @@ class DeviceProfile:
 
         params = {
             "showDebugInfo": "false",
-            "x-uber-device": "android",
+            "x-uber-device": self.device_type,
             "x-uber-client-name": "eats",
             "x-uber-client-version": self.version,
             "x-uber-client-id": self.client_id,
@@ -335,15 +388,15 @@ class DeviceProfile:
         headers = {
             'x-uber-device-mobile-iso2': 'US',
             'x-uber-drm-id': self.drm_id,
-            'x-uber-device': 'android',
+            'x-uber-device': self.device_type,
             'x-uber-device-language': 'en_US',
-            'user-agent': 'Cronet/129.0.6668.102@aa3a5623',
+            'user-agent': self.cronet_ua,
             'x-uber-device-os': self.os,
             'x-uber-device-sdk': self.sdk,
             'x-uber-request-uuid': str(uuid.uuid4()),
             'x-uber-client-user-session-id': self.client_user_analytics_session_id,
             'x-uber-client-version': self.version,
-            'x-uber-device-manufacturer': 'Google',
+            'x-uber-device-manufacturer': self.manufacturer,
             'x-uber-call-uuid': self.call_uuid,
             'x-uber-device-id': self.device_id,
             'x-uber-markup-textformat-version': '1',
@@ -370,7 +423,7 @@ class DeviceProfile:
         json_data = {
             'request': {
                 'installationID': self.installation_uuid,
-                'clientType': 'android',
+                'clientType': self.device_type,
                 'clientIntegrityToken': '',
             },
         }
@@ -381,15 +434,15 @@ class DeviceProfile:
         headers = {
             'x-uber-device-mobile-iso2': 'US',
             'x-uber-drm-id': self.drm_id,
-            'x-uber-device': 'android',
+            'x-uber-device': self.device_type,
             'x-uber-device-language': 'en_US',
-            'user-agent': 'Cronet/129.0.6668.102@aa3a5623',
+            'user-agent': self.cronet_ua,
             'x-uber-device-os': self.os,
             'x-uber-device-sdk': self.sdk,
             'x-uber-request-uuid': str(uuid.uuid4()),
             'x-uber-client-user-session-id': self.client_user_analytics_session_id,
             'x-uber-client-version': self.version,
-            'x-uber-device-manufacturer': 'Google',
+            'x-uber-device-manufacturer': self.manufacturer,
             'x-uber-call-uuid': self.call_uuid,
             'x-uber-device-id': self.device_id,
             'x-uber-markup-textformat-version': '1',
